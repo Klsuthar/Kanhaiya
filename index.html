@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanhaiya Lal Suthar - Portfolio</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS Variables (Theme) --- */
+        :root {
+            --bg-color: #f8f9fa; /* Light background */
+            --text-color: #343a40; /* Dark grey text */
+            --heading-color: #212529; /* Near black headings */
+            --accent-color: #4A90E2; /* Deep Blue */
+            --accent-hover-color: #357ABD;
+            --border-color: #dee2e6; /* Light border */
+            --card-bg: #ffffff; /* White cards */
+            --sidebar-bg: #ffffff;
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 80px;
+            --transition-speed: 0.4s;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.08);
+            --font-primary: 'Poppins', sans-serif;
+            --font-secondary: 'Roboto', sans-serif;
+            --font-display: 'Montserrat', sans-serif;
+        }
+
+        /* --- Reset & Base Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth; /* Although not much scrolling needed now */
+        }
+
+        body {
+            font-family: var(--font-secondary);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            display: flex;
+            opacity: 0;
+            animation: fadeInBody 0.8s ease-out forwards;
+            animation-delay: 0.5s; /* Delay until after loading */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            min-height: 100vh; /* Ensure body takes full height */
+        }
+
+        @keyframes fadeInBody { to { opacity: 1; } }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-primary);
+            color: var(--heading-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        h1 { font-size: 2.8rem; font-weight: 700; line-height: 1.2; }
+        h2 { font-size: 2rem; font-family: var(--font-display); font-weight: 700; color: var(--accent-color); margin-bottom: 2rem; text-align: center; }
+        h3 { font-size: 1.4rem; }
+        h4 { font-size: 1.1rem; margin-bottom: 0.8rem; }
+
+        p {
+            margin-bottom: 1rem;
+            font-size: 1rem; /* Base font size */
+            max-width: 70ch; /* Improve readability */
+        }
+        p:last-child { margin-bottom: 0; }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color var(--transition-speed) ease;
+        }
+        a:hover {
+            color: var(--accent-hover-color);
+            text-decoration: underline;
+        }
+
+        strong { font-weight: 700; color: var(--heading-color); }
+        em { font-style: italic; }
+
+        /* --- Loading Overlay --- */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.6s ease-out, visibility 0s linear 0.6s;
+            visibility: visible;
+        }
+        #loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader-dots span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            margin: 0 4px;
+            animation: dotPulse 1.4s infinite ease-in-out both;
+        }
+        .loader-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loader-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes dotPulse {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+        /* --- Main Layout: Sidebar + Content Area --- */
+        .portfolio-wrapper {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            position: fixed; /* Fixed position */
+            left: 0;
+            top: 0;
+            bottom: 0;
+            padding: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+            transition: width var(--transition-speed) ease;
+            z-index: 1000;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sidebar-logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 3rem;
+            text-align: center;
+            padding: 0 1rem;
+            word-break: break-word; /* Break long names if needed */
+            opacity: 1;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            width: 100%;
+            flex-grow: 1; /* Take remaining space */
+        }
+
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            padding: 0.9rem 2rem;
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 500;
+            font-family: var(--font-primary);
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, padding-left var(--transition-speed) ease;
+            text-decoration: none;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar-nav li a i {
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            width: 20px; /* Fixed width for icon alignment */
+            text-align: center;
+            transition: margin-right var(--transition-speed) ease;
+            color: #888; /* Muted icon color */
+        }
+
+        .sidebar-nav li a:hover,
+        .sidebar-nav li a.active {
+            background-color: rgba(74, 144, 226, 0.1); /* Light accent background */
+            color: var(--accent-color);
+            padding-left: 2.3rem;
+        }
+
+        .sidebar-nav li a.active i,
+        .sidebar-nav li a:hover i {
+            color: var(--accent-color);
+        }
+
+        .sidebar-footer {
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #888;
+            opacity: 1;
+            transition: opacity 0.2s ease;
+        }
+
+        /* Collapsed Sidebar (Example for potential future use or small screens) */
+        /*
+        body.sidebar-collapsed .sidebar {
+            width: var(--sidebar-width-collapsed);
+        }
+        body.sidebar-collapsed .sidebar-logo,
+        body.sidebar-collapsed .sidebar-footer,
+        body.sidebar-collapsed .sidebar-nav li a span {
+            opacity: 0;
+            pointer-events: none;
+        }
+        body.sidebar-collapsed .sidebar-nav li a {
+            justify-content: center;
+            padding: 0.9rem 0;
+        }
+        body.sidebar-collapsed .sidebar-nav li a i {
+            margin-right: 0;
+        }
+        body.sidebar-collapsed .main-content {
+            margin-left: var(--sidebar-width-collapsed);
+        }
+        */
+
+        /* --- Main Content Area --- */
+        .main-content {
+            margin-left: var(--sidebar-width); /* Offset by sidebar width */
+            flex-grow: 1;
+            padding: 3rem 4rem;
+            transition: margin-left var(--transition-speed) ease;
+            position: relative; /* Needed for absolute positioning of sections */
+            overflow-y: auto; /* Allow scrolling WITHIN the content area if needed */
+            height: 100vh; /* Take full viewport height */
+        }
+
+        /* --- Content Sections --- */
+        .content-section {
+            /* Start hidden and off-screen */
+            opacity: 0;
+            position: absolute; /* Stack sections */
+            top: 3rem; /* Match main content padding */
+            left: 4rem; /* Match main content padding */
+            right: 4rem;
+            transform: translateY(30px);
+            transition: opacity var(--transition-speed) ease-out, transform var(--transition-speed) ease-out;
+            pointer-events: none; /* Prevent interaction when hidden */
+            display: none; /* Use display none/flex to handle layout reflow */
+        }
+
+        .content-section.active {
+            opacity: 1;
+            transform: translateY(0);
+            position: relative; /* Take up space in flow when active */
+            top: 0; left: 0; right: 0; /* Reset position offsets */
+            pointer-events: auto;
+            display: flex; /* Or block, depending on section content */
+            flex-direction: column; /* Default */
+            animation: fadeInSection 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeInSection {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section specific layouts */
+        #home-content {
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            min-height: calc(100vh - 6rem); /* Full height minus padding */
+            flex-direction: column; /* Stack elements vertically */
+        }
+        #about-content .about-wrapper,
+        #resume-content .resume-grid,
+        #contact-content .contact-wrapper {
+             max-width: 1100px;
+             margin: 0 auto; /* Center content within the section */
+             width: 100%;
+        }
+
+        /* --- Component Styles (Redesigned) --- */
+
+        /* Home Section */
+        .home-profile-pic {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            border: 5px solid var(--card-bg);
+            box-shadow: var(--shadow-md);
+        }
+        .home-hello {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            font-family: var(--font-secondary);
+        }
+        .home-name {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--heading-color);
+        }
+        .home-name span { /* Accent color for name */
+            color: var(--accent-color);
+            font-style: italic;
+            font-weight: 700;
+        }
+        .home-profession {
+            font-size: 1.5rem;
+            font-family: var(--font-display);
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            height: 2rem; /* Fixed height for typing */
+            min-width: 5px;
+            display: inline-block; /* Needed for height and cursor positioning */
+        }
+         .home-profession::after { /* Blinking cursor */
+            content: "|";
+            display: inline-block;
+            margin-left: 5px;
+            animation: blink 0.7s infinite;
+            color: var(--text-color);
+            opacity: 1;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .home-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex; /* Align icon and text */
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-primary);
+            font-weight: 600;
+            border: 2px solid transparent;
+            transition: all var(--transition-speed) ease;
+            white-space: nowrap;
+        }
+        .btn i { margin-right: 0.5rem; }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border-color: var(--accent-color);
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-hover-color);
+            border-color: var(--accent-hover-color);
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        .btn-secondary:hover {
+            background-color: rgba(74, 144, 226, 0.1);
+            color: var(--accent-hover-color);
+            border-color: var(--accent-hover-color);
+            transform: translateY(-3px);
+            text-decoration: none;
+        }
+
+        /* About Section */
+        .about-wrapper {
+            display: flex;
+            gap: 4rem;
+            align-items: flex-start; /* Align tops */
+            margin-top: 2rem;
+        }
+        .about-left { flex: 0 0 300px; /* Fixed width for left column */ text-align: center; }
+        .about-right { flex: 1; }
+
+        .about-image img {
+            width: 200px; /* Slightly larger */
+            height: 200px;
+            border-radius: 15px; /* Rounded square */
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 5px solid var(--card-bg);
+        }
+        .about-details p { font-size: 0.95rem; margin-bottom: 0.8rem; text-align: left; }
+        .skills-title { font-size: 1.5rem; margin: 2.5rem 0 1.5rem; color: var(--heading-color); text-align: left; }
+
+        .skill { margin-bottom: 1.5rem; }
+        .skill-name {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+        .skill-name span:last-child { font-weight: 600; color: var(--accent-color); }
+        .skill-bar { height: 8px; background-color: #e9ecef; border-radius: 4px; overflow: hidden; }
+        .skill-progress {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 0;
+            border-radius: 4px;
+            transition: width 1.5s ease-out;
+        }
+        /* Animate skill progress when section is active */
+        #about-content.active .skill-progress {
+            width: var(--progress-width);
+        }
+
+        .about-info p { margin-bottom: 0.8rem; }
+
+        /* Resume Section */
+        .resume-section { margin-bottom: 3rem; }
+        .resume-title {
+            font-size: 1.6rem;
+            margin-bottom: 2rem;
+            text-align: left;
+            position: relative;
+            padding-bottom: 0.5rem;
+            color: var(--heading-color);
+        }
+        .resume-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.8rem;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        .card-year { font-size: 0.9rem; color: var(--accent-color); font-weight: 700; margin-bottom: 0.5rem; font-family: var(--font-display); }
+        .card-title { font-size: 1.15rem; margin-bottom: 0.7rem; color: var(--heading-color); line-height: 1.4; font-weight: 600; }
+        .card-description { color: var(--text-color); font-size: 0.9rem; margin-bottom: 0.3rem; line-height: 1.6; font-style: normal; }
+        .card-description strong { color: var(--heading-color); font-weight: 500; }
+
+        .resume-download-container { /* For the download button */
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .contact-item {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+        }
+         .contact-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        .contact-icon {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+        .contact-title { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--heading-color); }
+        .contact-info { color: var(--text-color); font-size: 0.95rem; word-wrap: break-word; }
+        .contact-info a { text-decoration: none; color: var(--accent-color); }
+        .contact-info a:hover { text-decoration: underline; }
+
+        .contact-form {
+            max-width: 700px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+        .contact-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--heading-color);
+        }
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: var(--font-secondary);
+            color: var(--text-color);
+            background-color: #fff;
+            transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+        }
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+        .contact-form textarea { resize: vertical; min-height: 120px; }
+        .contact-form button { width: 100%; } /* Uses .btn .btn-primary styles */
+
+        .social-links {
+            text-align: center;
+            margin-top: 3rem;
+        }
+        .social-link {
+            font-size: 1.8rem;
+            color: var(--text-color);
+            margin: 0 0.8rem;
+            transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
+            display: inline-block; /* Needed for transform */
+        }
+        .social-link:hover {
+            color: var(--accent-color);
+            transform: translateY(-4px);
+            text-decoration: none;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            :root {
+                --sidebar-width: var(--sidebar-width-collapsed); /* Collapse sidebar */
+            }
+            .sidebar-logo,
+            .sidebar-footer,
+            .sidebar-nav li a span { /* Hide text labels */
+                opacity: 0;
+                position: absolute; /* Remove from flow */
+                pointer-events: none;
+                width: 0;
+                overflow: hidden;
+            }
+            .sidebar-nav li a { /* Center icons */
+                justify-content: center;
+                padding: 0.9rem 0;
+            }
+            .sidebar-nav li a i {
+                margin-right: 0;
+                font-size: 1.5rem; /* Slightly larger icons when collapsed */
+            }
+             .sidebar-nav li a:hover,
+             .sidebar-nav li a.active {
+                 padding-left: 0; /* No padding shift on hover/active */
+             }
+
+            .main-content {
+                margin-left: var(--sidebar-width-collapsed);
+                padding: 2rem; /* Reduce padding */
+            }
+            .content-section {
+                left: 2rem; right: 2rem; top: 2rem;
+            }
+            .about-wrapper { flex-direction: column; align-items: center; gap: 2rem; }
+            .about-left { flex: 0 0 auto; width: 100%; max-width: 300px; }
+            .about-right { text-align: center; }
+            .about-details p, .skills-title { text-align: center; }
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.8rem; }
+            .home-name { font-size: 2.5rem; }
+            .home-profession { font-size: 1.3rem; }
+            .home-profile-pic { width: 150px; height: 150px; }
+        }
+
+        @media (max-width: 768px) {
+             .main-content { padding: 1.5rem; }
+             .content-section { left: 1.5rem; right: 1.5rem; top: 1.5rem; }
+             .cards-container { grid-template-columns: 1fr; } /* Single column for cards */
+             .contact-grid { grid-template-columns: 1fr; } /* Single column for contact items */
+             .home-buttons { flex-direction: column; gap: 1rem; align-items: center;}
+             .btn { width: 80%; max-width: 300px; }
+             h1 { font-size: 2rem; }
+             h2 { font-size: 1.6rem; }
+             .home-name { font-size: 2rem; }
+             .home-profession { font-size: 1.1rem; }
+        }
+         @media (max-width: 480px) {
+            :root {
+                --sidebar-width-collapsed: 60px; /* Even smaller sidebar */
+            }
+             .main-content { padding: 1rem; }
+             .content-section { left: 1rem; right: 1rem; top: 1rem; }
+              .home-profile-pic { width: 120px; height: 120px; }
+              .home-name { font-size: 1.8rem; }
+              .btn { width: 90%; }
+         }
+
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <div class="loader-dots">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+
+    <div class="portfolio-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">KLS</div>
+            <ul class="sidebar-nav" id="main-nav">
+                <li><a href="#home" class="active" data-section="home-content"><i class="fas fa-home"></i> <span>Home</span></a></li>
+                <li><a href="#about" data-section="about-content"><i class="fas fa-user"></i> <span>About</span></a></li>
+                <li><a href="#resume" data-section="resume-content"><i class="fas fa-file-alt"></i> <span>Resume</span></a></li>
+                <li><a href="#contact" data-section="contact-content"><i class="fas fa-envelope"></i> <span>Contact</span></a></li>
+            </ul>
+            <div class="sidebar-footer">&copy; 2024</div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Home Section Content -->
+            <section id="home-content" class="content-section active">
+                <img src="https://github.com/Klsuthar/KanhaiyalalSuthar/blob/main/images/profile.png?raw=true" alt="Kanhaiya Lal Suthar" class="home-profile-pic">
+                <p class="home-hello">HELLO!</p>
+                <h1 class="home-name">I'm <span>Kanhaiya Lal Suthar</span></h1>
+                <div class="home-profession" id="typing-text"></div>
+                <div class="home-buttons">
+                    <a href="https://www.linkedin.com/in/kanhaiyalalsuthar/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                    <a href="#resume" class="btn btn-secondary navigate-btn" data-section="resume-content">
+                       <i class="fas fa-briefcase"></i> My Works
+                    </a>
+                </div>
+            </section>
+
+            <!-- About Section Content -->
+            <section id="about-content" class="content-section">
+                <h2>About Me</h2>
+                <div class="about-wrapper">
+                    <div class="about-left">
+                        <div class="about-image">
+                            <img src="https://github.com/Klsuthar/KanhaiyalalSuthar/blob/main/images/about.png?raw=true" alt="Kanhaiya Lal">
+                        </div>
+                        <div class="about-details">
+                            <p><strong>NAME:</strong> KANHAIYA LAL SUTHAR</p>
+                            <p><strong>JOB ROLE:</strong> MATHS TEACHER</p>
+                            <p><strong>EXPERIENCE:</strong> 2+ MONTHS INTERN</p>
+                            <p><strong>ADDRESS:</strong> DHADHERU, CHURU, RAJASTHAN</p>
+                        </div>
+                    </div>
+                    <div class="about-right">
+                         <p>My name is <strong>Kanhaiya Lal</strong>, and I am a dedicated mathematics teacher with a strong academic background. I hold a <em>Bachelor of Science (BSc)</em> and a <em>Bachelor of Education (BEd)</em> degree, and I am currently preparing for the <em>RPSC 2nd Grade Teacher exam</em>. I am passionate about making complex mathematical concepts accessible and engaging for students, using innovative teaching methods to enhance their learning experience.</p>
+                         <div class="about-info">
+                             <p><strong>PROFILE:</strong> Maths Teacher</p>
+                             <p><strong>EDUCATION:</strong> BSc, BEd</p>
+                             <p><strong>LANGUAGE:</strong> Hindi, English</p>
+                             <p><strong>OTHER SKILLS:</strong> Computer Knowledge, Word, Excel, Tech Tools</p>
+                             <p><strong>INTEREST:</strong> Teaching, Travelling, Photography, Learning Tech</p>
+                         </div>
+                         <h3 class="skills-title">SKILLS</h3>
+                        <div class="skills">
+                             <div class="skill">
+                                <div class="skill-name"><span>TEACHING</span><span>95%</span></div>
+                                <div class="skill-bar"><div class="skill-progress" style="--progress-width: 95%;"></div></div>
+                            </div>
+                            <div class="skill">
+                                <div class="skill-name"><span>COMPUTER SKILLS (MS Office, Tech Tools)</span><span>90%</span></div>
+                                <div class="skill-bar"><div class="skill-progress" style="--progress-width: 90%;"></div></div>
+                            </div>
+                             <div class="skill">
+                                <div class="skill-name"><span>COMMUNICATION</span><span>70%</span></div>
+                                <div class="skill-bar"><div class="skill-progress" style="--progress-width: 70%;"></div></div>
+                            </div>
+                             <div class="skill">
+                                <div class="skill-name"><span>QUICK LEARNING</span><span>95%</span></div>
+                                <div class="skill-bar"><div class="skill-progress" style="--progress-width: 95%;"></div></div>
+                            </div>
+                             <div class="skill">
+                                <div class="skill-name"><span>ADAPTABILITY</span><span>80%</span></div>
+                                <div class="skill-bar"><div class="skill-progress" style="--progress-width: 80%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resume Section Content -->
+            <section id="resume-content" class="content-section">
+                <h2>Resume</h2>
+                 <div class="resume-grid">
+                    <div class="resume-section">
+                        <h3 class="resume-title">EXPERIENCE</h3>
+                        <div class="cards-container">
+                            <div class="card">
+                                <p class="card-year">2023</p>
+                                <h4 class="card-title">MATHS TEACHER INTERN - SENIOR LEVEL</h4>
+                                <p class="card-description">Gov. Sen. Sec. School, Dhadheru (1 Month)</p>
+                            </div>
+                            <div class="card">
+                                <p class="card-year">2024</p>
+                                <h4 class="card-title">MATHS TEACHER INTERN - SENIOR LEVEL</h4>
+                                <p class="card-description">Gov. Sen. Sec. School, Dhadheru (1 Month)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="resume-section">
+                        <h3 class="resume-title">EDUCATION</h3>
+                        <div class="cards-container">
+                            <div class="card">
+                                <p class="card-year">2017-2018</p>
+                                <h4 class="card-title">SECONDARY SCHOOL</h4>
+                                <p class="card-description">Shri Jagdamba Shikshan Sansthan, Dhadheru, Churu</p>
+                                <p class="card-description">Grade: <strong>First Class Distinction (84.33%)</strong></p>
+                            </div>
+                             <div class="card">
+                                <p class="card-year">2019-2020</p>
+                                <h4 class="card-title">HIGHER SECONDARY SCHOOL</h4>
+                                <p class="card-description">Abhilasha Shikshan Sansthani, Sandwa, Churu</p>
+                                <p class="card-description">Grade: <strong>First Class Distinction (87.60%)</strong></p>
+                            </div>
+                            <div class="card">
+                                <p class="card-year">2020-2023</p>
+                                <h4 class="card-title">BACHELOR OF SCIENCE (BSc)</h4>
+                                <p class="card-description">Maharaja Ganga Singh University, Bikaner (via Lohia College, Churu)</p>
+                                <p class="card-description">Grade: <strong>First Class Distinction (64.15%)</strong></p>
+                            </div>
+                             <div class="card">
+                                <p class="card-year">2022-2024</p>
+                                <h4 class="card-title">BACHELOR OF EDUCATION (BEd)</h4>
+                                <p class="card-description">Sadguru Institute of Education, Sanganer, Jaipur</p>
+                                <p class="card-description">Grade: <strong>First Class Distinction</strong></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="resume-download-container">
+                         <!-- !!! IMPORTANT: Update this href path to your actual resume file !!! -->
+                        <a href="path/to/your/KanhaiyaLalSuthar_Resume.pdf" download="KanhaiyaLalSuthar_Resume.pdf" class="btn btn-primary">
+                            <i class="fas fa-download"></i> Download Resume
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section Content -->
+            <section id="contact-content" class="content-section">
+                 <h2>Contact Me</h2>
+                 <div class="contact-wrapper">
+                    <div class="contact-grid">
+                         <div class="contact-item">
+                             <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <h3 class="contact-title">ADDRESS</h3>
+                             <p class="contact-info"><a href="https://maps.app.goo.gl/FoWhp6aNYvZx836EA" target="_blank" rel="noopener noreferrer">Dhadheru, Churu,<br>Rajasthan, India</a></p>
+                        </div>
+                         <div class="contact-item">
+                             <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                            <h3 class="contact-title">PHONE</h3>
+                             <p class="contact-info"><a href="tel:+919001375139">+91 90013 75139</a></p>
+                        </div>
+                         <div class="contact-item">
+                             <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                            <h3 class="contact-title">EMAIL</h3>
+                             <p class="contact-info"><a href="mailto:klsuthar0987@gmail.com">klsuthar0987@gmail.com</a></p>
+                        </div>
+                    </div>
+
+                    <form class="contact-form" id="contact-form">
+                         <label for="name">Name</label>
+                         <input type="text" id="name" name="name" placeholder="Your Name" required>
+
+                         <label for="email">Email</label>
+                         <input type="email" id="email" name="email" placeholder="Your Email" required>
+
+                         <label for="message">Message</label>
+                         <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+
+                         <button type="button" onclick="submitForm()" class="btn btn-primary">
+                             <i class="fas fa-paper-plane"></i> Send Message
+                         </button>
+                    </form>
+
+                    <div class="social-links">
+                         <a href="https://youtube.com/@KanhaiyaLalSutharMaths?si=g18y5d62nI0i-1h0" target="_blank" rel="noopener noreferrer" class="social-link" title="YouTube"><i class="fab fa-youtube"></i></a>
+                         <a href="https://linkedin.com/in/kanhaiyalalsuthar/" target="_blank" rel="noopener noreferrer" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                         <a href="https://twitter.com/Kanhaiy13218049" target="_blank" rel="noopener noreferrer" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
+                         <a href="https://facebook.com/kanhaiyalal.suthar.7543" target="_blank" rel="noopener noreferrer" class="social-link" title="Facebook"><i class="fab fa-facebook"></i></a>
+                         <a href="https://instagram.com/klsuthar121" target="_blank" rel="noopener noreferrer" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('#main-nav a');
+            const contentSections = document.querySelectorAll('.main-content .content-section');
+            const mainContentArea = document.querySelector('.main-content');
+            const internalNavigateButtons = document.querySelectorAll('.navigate-btn');
+
+            // --- Loading Overlay ---
+            const hideLoadingOverlay = () => {
+                const overlay = document.getElementById('loading-overlay');
+                if (overlay) {
+                     overlay.classList.add('hidden');
+                     // Remove after transition
+                     overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
+                }
+            };
+             // Use 'load' event to ensure styles are applied before removing overlay
+             window.addEventListener('load', () => {
+                 // A small delay might still be needed for initial paint after load
+                 setTimeout(hideLoadingOverlay, 100);
+             });
+             // Fallback
+             setTimeout(hideLoadingOverlay, 3000);
+
+
+            // --- Navigation Logic ---
+            const activateSection = (sectionId, clickedLink = null) => {
+                // Remove active class from all sections and links
+                contentSections.forEach(section => section.classList.remove('active'));
+                navLinks.forEach(link => link.classList.remove('active'));
+
+                // Find the target section and corresponding link
+                const targetSection = document.getElementById(sectionId);
+                let targetLink = clickedLink;
+                 // If triggered programmatically (e.g., by internal button), find the matching nav link
+                 if (!targetLink) {
+                     targetLink = document.querySelector(`#main-nav a[data-section="${sectionId}"]`);
+                 }
+
+
+                if (targetSection) {
+                    mainContentArea.scrollTop = 0; // Scroll content area to top
+                    targetSection.classList.add('active');
+                    // Trigger skill animation if activating 'about'
+                    if(sectionId === 'about-content') {
+                         targetSection.querySelectorAll('.skill-progress').forEach(bar => {
+                             // Re-trigger animation by briefly removing and adding width
+                             const width = bar.style.getPropertyValue('--progress-width');
+                             bar.style.width = '0';
+                             setTimeout(() => { bar.style.width = width; }, 100); // Small delay
+                         });
+                    }
+                }
+                 if (targetLink) {
+                     targetLink.classList.add('active');
+                 }
+            };
+
+            // Event listener for sidebar navigation
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent default anchor jump
+                    const sectionId = link.getAttribute('data-section');
+                    activateSection(sectionId, link);
+                     // Update URL hash (optional, for bookmarking/back button)
+                     // history.pushState(null, null, `#${sectionId.replace('-content', '')}`);
+                });
+            });
+
+            // Event listener for internal navigation buttons (like "My Works")
+            internalNavigateButtons.forEach(button => {
+                 button.addEventListener('click', (e) => {
+                     e.preventDefault();
+                     const sectionId = button.getAttribute('data-section');
+                     activateSection(sectionId);
+                      // Update URL hash (optional)
+                     // history.pushState(null, null, `#${sectionId.replace('-content', '')}`);
+                 });
+            });
+
+             // Optional: Handle initial load based on URL hash
+             /*
+             const initialHash = window.location.hash.substring(1);
+             if (initialHash) {
+                 const initialSectionId = `${initialHash}-content`;
+                 const sectionExists = document.getElementById(initialSectionId);
+                 if (sectionExists) {
+                     activateSection(initialSectionId);
+                 } else {
+                     activateSection('home-content'); // Default to home if hash is invalid
+                 }
+             } else {
+                 activateSection('home-content'); // Default to home if no hash
+             }
+             */
+              // Simplified initial load - always start at home
+             activateSection('home-content', document.querySelector('#main-nav a[data-section="home-content"]'));
+
+
+            // --- Typing Animation (Adapted) ---
+             const typeWriter = () => {
+                const typingElement = document.getElementById('typing-text');
+                if (!typingElement) return;
+
+                 const words = ["Maths Teacher", "Tech Enthusiast", "Excel Expert", "Lifelong Learner", "Innovator"];
+                 let wordIndex = 0, charIndex = 0, isDeleting = false;
+
+                 function type() {
+                     const currentWord = words[wordIndex];
+                     // Use --text-color for typing
+                     typingElement.style.color = 'var(--text-color)';
+
+                     const typeSpeed = 120;
+                     const deleteSpeed = 60;
+                     const pauseWord = 1500;
+                     const pauseNext = 500;
+
+                     const currentText = isDeleting ? currentWord.substring(0, charIndex - 1) : currentWord.substring(0, charIndex + 1);
+                     typingElement.textContent = currentText;
+
+                     let timeoutSpeed = isDeleting ? deleteSpeed : typeSpeed;
+
+                     if (!isDeleting && charIndex === currentWord.length) {
+                         isDeleting = true;
+                         timeoutSpeed = pauseWord;
+                     } else if (isDeleting && charIndex === 0) {
+                         isDeleting = false;
+                         wordIndex = (wordIndex + 1) % words.length;
+                         timeoutSpeed = pauseNext;
+                     }
+
+                     charIndex += isDeleting ? -1 : 1;
+                     setTimeout(type, timeoutSpeed);
+                 }
+                 typingElement.textContent = '';
+                 setTimeout(type, 1200); // Start after a delay
+            };
+            typeWriter(); // Initialize typing animation
+
+        }); // End DOMContentLoaded
+
+
+        // --- Contact Form Submission (Unchanged Logic) ---
+        function submitForm() {
+            const form = document.getElementById('contact-form');
+            const name = document.getElementById('name')?.value?.trim();
+            const email = document.getElementById('email')?.value?.trim();
+            const message = document.getElementById('message')?.value?.trim();
+
+            if (!name || !email || !message) {
+                 alert('Please fill in all required fields.');
+                 return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                 alert('Please enter a valid email address.');
+                 return;
+            }
+
+            const recipientEmail = "klsuthar0987@gmail.com"; // Confirm email
+            const subject = encodeURIComponent(`Portfolio Contact: ${name}`);
+            const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+            const mailtoLink = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+
+            try {
+                 const mailWindow = window.open(mailtoLink, '_blank');
+                 if (!mailWindow) {
+                     alert('Could not open email client automatically. Please copy the details or try again.');
+                 }
+            } catch (e) {
+                 console.error("Failed to open mailto link:", e);
+                 alert('An error occurred while trying to open your email client.');
+            }
+
+            setTimeout(() => {
+                if (form) form.reset();
+            }, 1000);
+
+            alert('Your email application should open shortly to send the message. If it doesn\'t, please check your popup settings or manually send an email to ' + recipientEmail);
+        }
+
+    </script>
+</body>
+</html>
